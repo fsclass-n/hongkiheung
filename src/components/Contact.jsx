@@ -1,13 +1,17 @@
 import { profile } from '../data/profile.js'
+import { useI18n } from '../i18n/LanguageContext.jsx'
+import { ui } from '../i18n/ui.js'
+import ContactForm from './ContactForm.jsx'
 import { Icon } from './Icons.jsx'
 import Reveal from './Reveal.jsx'
 import SectionHeading from './SectionHeading.jsx'
 
-// SECTION 7. CONTACT: 클릭 한 번으로 전화/이메일 연결
+// SECTION 7. CONTACT: 클릭 한 번으로 전화/이메일 연결 + Web3Forms 문의 폼
 export default function Contact() {
+  const { t, lang } = useI18n()
   const rows = [
-    { icon: 'mail', label: 'Email', value: profile.email, href: profile.emailHref, action: '이메일 보내기' },
-    { icon: 'phone', label: 'Phone', value: profile.phone, href: profile.phoneHref, action: '전화 걸기' },
+    { icon: 'mail', label: 'Email', value: profile.email, href: profile.emailHref(lang), action: ui.contact.sendEmail },
+    { icon: 'phone', label: 'Phone', value: profile.phone, href: profile.phoneHref, action: ui.contact.call },
   ]
 
   return (
@@ -17,51 +21,57 @@ export default function Contact() {
           index="07"
           label="CONTACT"
           id="contact-title"
-          title="함께 일할 수 있기를 기대합니다"
-          desc="채용 담당자와 면접관분들의 연락을 기다리고 있습니다. 편하신 방법으로 연락 주세요."
+          title={t(ui.contact.title)}
+          desc={t(ui.contact.desc)}
         />
 
-        <Reveal className="card relative overflow-hidden p-8 sm:p-12">
-          <div className="hero-bg absolute inset-0 opacity-70" aria-hidden="true" />
-          <div className="relative grid gap-10 lg:grid-cols-[0.8fr_1.2fr] lg:items-center">
-            <div>
+        <div className="grid gap-6 lg:grid-cols-[0.85fr_1.15fr]">
+          {/* 좌측: 이름 + 전화/이메일 바로 연결 */}
+          <Reveal className="card relative overflow-hidden p-7 sm:p-9">
+            <div className="hero-bg absolute inset-0 opacity-70" aria-hidden="true" />
+            <div className="relative">
               <p className="font-mono text-sm font-semibold tracking-widest text-accent">{profile.role}</p>
-              <p className="mt-2 text-4xl font-black tracking-tight sm:text-5xl">{profile.name}</p>
-              <p className="mt-4 text-muted">
-                새로운 기술을 배우고 서비스로 만드는 일을 좋아합니다. 부담 없이 연락 주세요.
-              </p>
-            </div>
+              <p className="mt-2 text-4xl font-black tracking-tight sm:text-5xl">{t(profile.name)}</p>
+              <p className="mt-4 text-muted">{t(ui.contact.lead)}</p>
 
-            <ul className="grid gap-4">
-              {rows.map((r) => (
-                <li key={r.label}>
-                  <a
-                    href={r.href}
-                    className="group flex items-center gap-4 rounded-2xl border border-line bg-surface p-4 transition duration-300 hover:-translate-y-1 hover:border-accent/60 hover:shadow-[var(--shadow-hover)] sm:p-5"
-                  >
-                    <span className="btn-primary grid h-12 w-12 shrink-0 place-items-center rounded-xl">
-                      <Icon name={r.icon} className="h-5 w-5" />
-                    </span>
-                    <span className="min-w-0 flex-1">
-                      <span className="block font-mono text-xs font-bold tracking-widest text-muted uppercase">{r.label}</span>
-                      <span className="block truncate text-lg font-bold sm:text-xl">{r.value}</span>
-                    </span>
-                    <span className="hidden items-center gap-1 text-sm font-semibold text-accent sm:flex">
-                      {r.action}
-                      <Icon name="arrowRight" className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-                    </span>
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </Reveal>
+              <ul className="mt-8 grid gap-3">
+                {rows.map((r) => (
+                  <li key={r.label}>
+                    <a
+                      href={r.href}
+                      className="group flex items-center gap-4 rounded-2xl border border-line bg-surface p-4 transition duration-300 hover:-translate-y-1 hover:border-accent/60 hover:shadow-[var(--shadow-hover)]"
+                    >
+                      <span className="btn-primary grid h-12 w-12 shrink-0 place-items-center rounded-xl">
+                        <Icon name={r.icon} className="h-5 w-5" />
+                      </span>
+                      <span className="min-w-0 flex-1">
+                        <span className="block font-mono text-xs font-bold tracking-widest text-muted uppercase">{r.label}</span>
+                        <span className="block truncate text-lg font-bold">{r.value}</span>
+                        <span className="mt-0.5 flex items-center gap-1 text-sm font-semibold text-accent">
+                          {t(r.action)}
+                          <Icon name="arrowRight" className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                        </span>
+                      </span>
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </Reveal>
+
+          {/* 우측: Web3Forms 문의 폼 */}
+          <Reveal delay={100} className="card p-7 sm:p-9">
+            <ContactForm />
+          </Reveal>
+        </div>
 
         <Reveal className="mt-14 text-center">
           <p className="text-xl font-bold sm:text-2xl">
-            배우는 속도만큼 <span className="gradient-text">성장하는 개발자</span>가 되겠습니다.
+            {t(ui.contact.closing1)}
+            <span className="gradient-text">{t(ui.contact.closing2)}</span>
+            {t(ui.contact.closing3)}
           </p>
-          <p className="mt-2 text-muted">읽어 주셔서 감사합니다.</p>
+          <p className="mt-2 text-muted">{t(ui.contact.thanks)}</p>
         </Reveal>
       </div>
     </section>

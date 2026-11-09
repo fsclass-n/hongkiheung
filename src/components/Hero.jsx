@@ -1,10 +1,12 @@
 import { heroMessages, profile } from '../data/profile.js'
 import { projects } from '../data/projects.js'
 import { skillCategories } from '../data/skills.js'
+import { useI18n } from '../i18n/LanguageContext.jsx'
+import { ui } from '../i18n/ui.js'
 import { Icon } from './Icons.jsx'
 
 // 히어로 우측의 코드 카드: 개발자다운 분위기와 핵심 정보를 한눈에 전달합니다.
-const code = [
+const buildCode = (name) => [
   [
     ['k', 'const '],
     ['v', 'developer'],
@@ -14,7 +16,7 @@ const code = [
     ['p', '  '],
     ['n', 'name'],
     ['p', ': '],
-    ['s', `'${profile.name}'`],
+    ['s', `'${name}'`],
     ['p', ','],
   ],
   [
@@ -87,10 +89,12 @@ const tokenColor = {
 }
 
 export default function Hero() {
+  const { t, lang } = useI18n()
+  const code = buildCode(t(profile.name))
   const stats = [
-    { value: projects.length, label: '배포한 프로젝트' },
-    { value: skillCategories.length, label: '기술 영역' },
-    { value: skillCategories.find((c) => c.id === 'cloud').items.length, label: '클라우드 · 배포 도구' },
+    { value: projects.length, label: t(ui.hero.statProjects) },
+    { value: skillCategories.length, label: t(ui.hero.statAreas) },
+    { value: skillCategories.find((c) => c.id === 'cloud').items.length, label: t(ui.hero.statCloud) },
   ]
 
   return (
@@ -107,30 +111,28 @@ export default function Hero() {
             FULL-STACK · DATA · GENERATIVE AI
           </p>
 
-          <h1 className="rise mt-6 text-5xl leading-[1.1] font-black tracking-tight sm:text-6xl lg:text-7xl" style={{ '--d': '80ms' }}>
-            <span className="block text-2xl font-bold text-muted sm:text-3xl">안녕하세요, 개발자</span>
-            <span className="gradient-text">{profile.name}</span>
-            <span className="text-fg">입니다.</span>
+          <h1 className="rise mt-6 text-[2.6rem] min-[360px]:text-5xl leading-[1.1] font-black tracking-tight sm:text-6xl lg:text-7xl" style={{ '--d': '80ms' }}>
+            <span className="block text-2xl font-bold text-muted sm:text-3xl">{t(ui.hero.hello)}</span>
+            <span className="gradient-text">{t(profile.name)}</span>
+            <span className="text-fg">{t(ui.hero.suffix)}</span>
           </h1>
 
           <p className="rise mt-6 max-w-xl text-xl font-bold leading-snug text-fg sm:text-2xl" style={{ '--d': '160ms' }}>
-            기획부터 배포까지, <br className="hidden sm:block" />
-            직접 만들어 증명하는 풀스택 개발자.
+            {t(ui.hero.tagline)}
           </p>
 
           <p className="rise mt-5 max-w-xl text-base text-muted sm:text-lg" style={{ '--d': '220ms' }}>
-            체육학 전공 후 개발자의 길로 들어와 빅데이터 과정을 거치며 풀스택 개발과 Python 데이터 분석을 익혔습니다.
-            팀 프로젝트로 실제 서비스를 개발해 클라우드에 배포했고, 생성형 AI를 개발 파트너로 활용합니다.
+            {t(ui.hero.intro)}
           </p>
 
           <ul className="rise mt-6 flex flex-wrap gap-2" style={{ '--d': '280ms' }}>
             {heroMessages.map((m) => (
               <li
-                key={m.text}
+                key={m.text.ko}
                 className="flex items-center gap-2 rounded-full border border-line bg-surface px-3.5 py-1.5 text-sm font-medium"
               >
                 <Icon name={m.icon} className="h-4 w-4 text-accent" />
-                {m.text}
+                {t(m.text)}
               </li>
             ))}
           </ul>
@@ -140,15 +142,15 @@ export default function Hero() {
               href="#projects"
               className="btn-primary inline-flex items-center gap-2 rounded-xl px-6 py-3.5 text-base font-bold transition duration-300"
             >
-              프로젝트 보기
+              {t(ui.hero.viewProjects)}
               <Icon name="arrowDown" className="h-4 w-4" strokeWidth={2.5} />
             </a>
             <a
-              href={profile.emailHref}
+              href={profile.emailHref(lang)}
               className="btn-ghost inline-flex items-center gap-2 rounded-xl px-6 py-3.5 text-base font-bold transition duration-300"
             >
               <Icon name="mail" className="h-4 w-4" />
-              이메일 연락하기
+              {t(ui.hero.sendEmail)}
             </a>
           </div>
 
@@ -170,7 +172,7 @@ export default function Hero() {
           <div className="absolute -inset-4 rounded-3xl bg-gradient-to-br from-[#3b64e8]/30 to-[#7c3aed]/30 blur-2xl" aria-hidden="true" />
           <figure
             className="relative overflow-hidden rounded-2xl border border-white/10 bg-[#0a1020] shadow-2xl"
-            aria-label="개발자 프로필 요약 코드"
+            aria-label={t(ui.hero.codeLabel)}
           >
             <figcaption className="flex items-center gap-2 border-b border-white/10 px-4 py-3">
               <span className="h-3 w-3 rounded-full bg-[#ff5f57]" aria-hidden="true" />

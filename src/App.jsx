@@ -12,10 +12,13 @@ import ScrollProgress from './components/ScrollProgress.jsx'
 import TechStack from './components/TechStack.jsx'
 import { navItems } from './data/profile.js'
 import useScrollSpy from './hooks/useScrollSpy.js'
+import { useI18n } from './i18n/LanguageContext.jsx'
+import { ui } from './i18n/ui.js'
 import useTheme from './hooks/useTheme.js'
 
 // 섹션 순서: HERO → ABOUT → TECH STACK → PROJECTS → EDUCATION → PHILOSOPHY → CONTACT
 export default function App() {
+  const { t } = useI18n()
   const [theme, toggleTheme] = useTheme()
   const ids = useMemo(() => navItems.map((n) => n.id), [])
   const active = useScrollSpy(ids)
@@ -26,7 +29,7 @@ export default function App() {
         href="#main"
         className="sr-only rounded-lg bg-accent px-4 py-2 font-bold text-white focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[100]"
       >
-        본문으로 건너뛰기
+        {t(ui.skip)}
       </a>
       <ScrollProgress />
       <Header theme={theme} onToggleTheme={toggleTheme} active={active} />
