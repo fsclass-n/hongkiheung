@@ -1,4 +1,5 @@
 import { projects } from '../data/projects.js'
+import { asset } from '../utils/asset.js'
 import { useI18n } from '../i18n/LanguageContext.jsx'
 import { ui } from '../i18n/ui.js'
 import ExternalLink from './ExternalLink.jsx'
@@ -37,7 +38,7 @@ function ProjectCard({ project: p, index }) {
           aria-label={`${t(p.name)} - ${t(ui.projects.openService)}`}
         >
           <img
-            src={p.image}
+            src={asset(p.image)}
             alt={t(p.imageAlt)}
             width="960"
             height="600"

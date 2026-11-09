@@ -1,0 +1,53 @@
+# GitHub Pages 배포: main 브랜치에 푸시하면 빌드 후 https://fsclass-n.github.io/hongkiheung/ 로 배포합니다.
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# 같은 브랜치의 배포가 겹치면 이전 배포를 취소
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - name: Build
+        run: npm run build
+        env:
+          # 프로젝트 페이지는 /저장소명/ 하위 경로에서 서비스됩니다.
+          VITE_BASE: /hongkiheung/
+          # (선택) 문의 폼용 Web3Forms Access Key. 저장소 Settings > Secrets and variables > Actions 에 등록하세요.
+          VITE_WEB3FORMS_ACCESS_KEY: ${{ secrets.WEB3FORMS_ACCESS_KEY }}
+
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
